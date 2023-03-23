@@ -1,19 +1,21 @@
 using Application.Activities;
 using Domain;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
-
-        [HttpGet] //api/activities
+        [HttpGet]
         public async Task<ActionResult<List<Activity>>> GetActivities()
         {
             return await Mediator.Send(new List.Query());
         }
 
-        [HttpGet("{id}")] //api/activities/Guid
+        [HttpGet("{id}")]
         public async Task<ActionResult<Activity>> GetActivity(Guid id)
         {
             return await Mediator.Send(new Details.Query { Id = id });
@@ -26,17 +28,16 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditActivity(Guid id, Activity activity)
+        public async Task<IActionResult> Edit(Guid id, Activity activity)
         {
             activity.Id = id;
             return Ok(await Mediator.Send(new Edit.Command { Activity = activity }));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteActivity(Guid id, Activity activity)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            activity.Id = id;
-            return Ok(await Mediator.Send(new Delete.Command { Activity = activity }));
+            return Ok(await Mediator.Send(new Delete.Command { Id = id }));
         }
     }
 }
