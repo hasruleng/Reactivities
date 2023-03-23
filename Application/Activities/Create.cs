@@ -8,7 +8,7 @@ namespace Application.Activities
 {
     public class Create
     {
-        public class Command : IRequest<Result<Unit>> //specify unit, the mediator unit, to say, look, we're not really returning anything.
+        public class Command : IRequest<Result<Unit>> //specify Unit, the mediator unit, to say, look, we're not really returning anything.
         {
             public Activity Activity { get; set; }
         }
@@ -34,13 +34,12 @@ namespace Application.Activities
             {
                 _context.Activities.Add(request.Activity);
 
-                var result = _context.SaveChangesAsync() > 0;
+                var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Failed to create Activity");
                 
                 return Result<Unit>.Success(Unit.Value);
 
-                return Unit.Value;
             }
         }
     }
