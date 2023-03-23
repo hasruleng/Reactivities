@@ -1,11 +1,10 @@
 using Domain;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Persistence;
 
 namespace Application.Activities
 {
-    public class Create
+    public class Edit
     {
         public class Command : IRequest
         {
@@ -22,9 +21,11 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                _context.Activities.Add(request.Activity);//belum ke DB, EF mencatat di memori bahwa kita nambah data Activity
+                var activity = await _context.Activities.FindAsync(request.Activity.Id);
+                
+                activity.Title = request.Activity.Title ?? activity.Title;
 
-                await _context.SaveChangesAsync();//baru simpan ke DB
+                await _context.SaveChangesAsync(); //baru update ke DB
 
                 return Unit.Value; //did nothing just return
             }
