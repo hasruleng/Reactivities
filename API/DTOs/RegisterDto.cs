@@ -4,11 +4,11 @@ namespace API.DTOs
 {
     public class RegisterDto
     {
-        [Required]
+        [Required] //ini baru ada di validating the registration of users
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required] //ini baru ada di validating the registration of users
         [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$", ErrorMessage = "Password must be complex")]
         public string Password { get; set; }
 
