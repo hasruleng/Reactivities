@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Security.Claims;
 using API.DTOs;
 using API.Services;
@@ -46,12 +45,14 @@ namespace API.Controllers
         {
             if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
             {
-                return BadRequest("Username is already taken");
+                ModelState.AddModelError("username", "Username taken");
+                return ValidationProblem();
             }
 
             if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
             {
-                return BadRequest("Email is already taken");
+                ModelState.AddModelError("email", "Email taken");
+                return ValidationProblem();
             }
 
             var user = new AppUser
@@ -70,7 +71,6 @@ namespace API.Controllers
 
             return BadRequest(result.Errors);
         }
-
 
         [Authorize]
         [HttpGet]
@@ -91,6 +91,5 @@ namespace API.Controllers
                 Username = user.UserName
             };
         }
-
     }
 }

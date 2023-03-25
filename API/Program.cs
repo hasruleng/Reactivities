@@ -12,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers(opt => 
-{   
+{
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    opt.Filters.Add(new AuthorizeFilter(policy)); //masang ini artinya untuk pake API harus terauntentikasi dulu, kecuali yang diatur AllowAnonymous spt AccountController (API login dkk)
+    opt.Filters.Add(new AuthorizeFilter(policy));
 });
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
@@ -26,15 +26,14 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    // app.UseDeveloperExceptionPage(); //otomatis ada di Development environment
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseCors("CorsPolicy");
 
-app.UseAuthentication();//ini ditambahkan ketika API-API butuh ngecek Token, Authentication harus sebelum Authorization
-app.UseAuthorization();//is the user allowed to go to this particular location/use particular API endpoint?
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
@@ -46,7 +45,7 @@ try
     var context = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
-    await Seed.SeedData(context, userManager); //seed data dari kode kayak gini cuma kepake di latihan
+    await Seed.SeedData(context, userManager);
 }
 catch (Exception ex)
 {
