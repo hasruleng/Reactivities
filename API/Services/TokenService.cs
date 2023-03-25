@@ -9,7 +9,7 @@ namespace API.Services
     public class TokenService
     {
         private readonly IConfiguration _config;
-        public TokenService(IConfiguration config)
+        public TokenService(IConfiguration config)//constructor ini baru dipake pada saat mau ambil config dari appsettings.development.json
         {
             _config = config;
         }
@@ -22,7 +22,7 @@ namespace API.Services
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key")); //this must never leave the server, kinda like private key
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"])); //this must never leave the server, kinda like private key
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -37,6 +37,6 @@ namespace API.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
-        }   
+        }
     }
 }
