@@ -29,8 +29,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("CorsPolicy");
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication();//ini ditambahkan ketika API-API butuh ngecek Token, Authentication harus sebelum Authorization
+app.UseAuthorization();//is the user allowed to go to this particular location/use particular API endpoint?
 
 app.MapControllers();
 

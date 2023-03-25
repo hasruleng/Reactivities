@@ -3,11 +3,8 @@ using System.Security.Claims;
 using API.DTOs;
 using API.Services;
 using Domain;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Attributes;
 
 namespace API.Controllers
 {
