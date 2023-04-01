@@ -30,10 +30,10 @@ namespace Infrastructure.Security
             var activityId = Guid.Parse(_httpContextAccessor.HttpContext?.Request.RouteValues
                 .SingleOrDefault(x => x.Key == "id").Value?.ToString());
 
-            var attendee = _dbContext.ActivityAttendees //when we're getting our attendee objects from entity framework, this is tracking the entity that we're getting.
-                .FindAsync(userId, activityId).Result; //And this stays in memory, even though our handler will have been disposed of because it's a transient,
-//it doesn't mean that the entity that we've obtained from entity framework is also going to be disposed.
-//This is staying in memory and it's causing a problem when we're editing an activity because we're only sending up the activity object.
+            var attendee = _dbContext.ActivityAttendees
+                .AsNoTracking() //AsNoTracking cannot be used with FindAsync
+                .FirstOrDefaultAsync(x => x.AppUserId == userId && x.ActivityId == activityId) //FindAsync is always going to track an activity or an entity, and we cannot use as no tracking with it
+                .Result; //As this is no tracking, this object will not be kept in memory
 
             if (attendee == null) return Task.CompletedTask; //will not meet authorization requirement
 
