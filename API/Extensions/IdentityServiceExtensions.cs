@@ -33,6 +33,19 @@ namespace API.Extensions
                         ValidateIssuer = false, //We can validate against these things, of course, 
                         ValidateAudience = false //but we would need to add them to the token that we're issuing.
                     };
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];//signalR the client side is going to pass our token in a query string.
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddAuthorization(opt =>
