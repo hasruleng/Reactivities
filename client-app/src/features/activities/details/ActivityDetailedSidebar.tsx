@@ -12,7 +12,7 @@ export default observer(function ActivityDetailedSidebar ({activity: {attendees,
     return (
         <>
             <Segment
-                textAlign='center'
+                textAlign='center'  
                 style={{ border: 'none' }}
                 attached='top'
                 secondary
