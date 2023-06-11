@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { Segment, Header, Comment, Loader } from 'semantic-ui-react'
 import { useStore } from '../../../app/stores/store'
 import * as Yup from 'yup'
+import { formatDistanceToNow } from 'date-fns'
 
 interface Props {
     activityId: string;
@@ -33,23 +34,7 @@ export default observer(function ActivityDetailedChat({ activityId }: Props) {
                 <Header>Chat about this event</Header>
             </Segment>
             <Segment attached clearing>
-                <Comment.Group>
-                    {commentStore.comments.map(comment => (
-                        <Comment key={comment.id}>
-                            <Comment.Avatar src={comment.image || '/assets/user.png'} />
-                            <Comment.Content>
-                                <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
-                                    {comment.displayName}
-                                </Comment.Author>
-                                <Comment.Metadata>
-                                    <div>{comment.createdAt.toString()}</div>
-                                </Comment.Metadata>
-                                <Comment.Text style={{whiteSpace: 'pre-wrap'}}>{comment.body}</Comment.Text>
-                            </Comment.Content>
-                        </Comment>
-                    ))}
-
-                    <Formik 
+            <Formik 
                         onSubmit={(values, { resetForm }) =>
                             commentStore.addComment(values).then(() => resetForm())}
                         initialValues={{ body: '' }}
@@ -82,6 +67,21 @@ export default observer(function ActivityDetailedChat({ activityId }: Props) {
                             </Form>
                         )}
                     </Formik>
+                <Comment.Group>
+                    {commentStore.comments.map(comment => (
+                        <Comment key={comment.id}>
+                            <Comment.Avatar src={comment.image || '/assets/user.png'} />
+                            <Comment.Content>
+                                <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
+                                    {comment.displayName}
+                                </Comment.Author>
+                                <Comment.Metadata>
+                                    <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                                </Comment.Metadata>
+                                <Comment.Text style={{whiteSpace: 'pre-wrap'}}>{comment.body}</Comment.Text>
+                            </Comment.Content>
+                        </Comment>
+                    ))}                  
                 </Comment.Group>
             </Segment>
         </>
