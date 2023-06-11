@@ -41,4 +41,14 @@ export default class CommentStore {
         this.comments = [];
         this.stopHubConnection();
     }
+
+    addComment = async (values: any)=> {
+        console.log('addComment here');
+        values.activityId = store.activityStore.selectedActivity?.id;
+        try {
+            await this.hubConnection?.invoke('SendComment', values) //cocokin dengan nama method di API > SignalR > ChatHub.cs (MapHub dari endpoint 'chat')
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

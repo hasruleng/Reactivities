@@ -1,8 +1,11 @@
+import { Formik,  Form } from 'formik'
 import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react'
-import { Segment, Header, Comment, Form, Button } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import { Segment, Header, Comment, Button } from 'semantic-ui-react'
 import { useStore } from '../../../app/stores/store'
-import { Link } from 'react-router-dom';
+import MyTextArea from '../../../app/common/form/MyTextArea';
+
 
 interface Props {
     activityId: string;
@@ -30,32 +33,43 @@ export default observer(function ActivityDetailedChat({ activityId }: Props) {
             >
                 <Header>Chat about this event</Header>
             </Segment>
-            <Segment attached>
+            <Segment attached clearing>
                 <Comment.Group>
                     {commentStore.comments.map(comment => (
-                    <Comment key={comment.id}>
-                        <Comment.Avatar src={comment.image ||'/assets/user.png'} />
-                        <Comment.Content>
-                            <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
-                                {comment.displayName}
+                        <Comment key={comment.id}>
+                            <Comment.Avatar src={comment.image || '/assets/user.png'} />
+                            <Comment.Content>
+                                <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
+                                    {comment.displayName}
                                 </Comment.Author>
-                            <Comment.Metadata>
-                                <div>{comment.createdAt.toISOString()}</div>
-                            </Comment.Metadata>
-                            <Comment.Text>{comment.body}</Comment.Text>
-                        </Comment.Content>
-                    </Comment>
+                                <Comment.Metadata>
+                                    <div>{comment.createdAt.toString()}</div>
+                                </Comment.Metadata>
+                                <Comment.Text>{comment.body}</Comment.Text>
+                            </Comment.Content>
+                        </Comment>
                     ))}
 
-                    <Form reply>
-                        <Form.TextArea />
-                        <Button
-                            content='Add Reply'
-                            labelPosition='left'
-                            icon='edit'
-                            primary
-                        />
-                    </Form>
+                    <Formik 
+                        onSubmit={(values, { resetForm }) =>
+                            commentStore.addComment(values).then(() => resetForm())}
+                        initialValues={{ body: '' }}
+                    >
+                        {({isSubmitting, isValid}) => (
+                            <Form className='ui form'>
+                                <MyTextArea placeholder='Add comment' name = 'body' rows ={2}/>
+                                <Button 
+                                    loading={isSubmitting|| !isValid}
+                                    content='Add Reply'
+                                    labelPosition='left'
+                                    icon='edit'
+                                    primary
+                                    type ='submit'
+                                    floated='right'
+                                />
+                            </Form>
+                        )}
+                    </Formik>
                 </Comment.Group>
             </Segment>
         </>

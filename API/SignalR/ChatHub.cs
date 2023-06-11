@@ -18,7 +18,7 @@ namespace API.SignalR
             var comment = await _mediator.Send(command);
         
             await Clients.Group(command.ActivityId.ToString()) //send it to group instead of the caller alone
-                .SendAsync("ReceiveComment", comment.Value);
+                .SendAsync("ReceiveComment", comment.Value); //setiap kali dipanggil kirim komen, grup klien yg terkoneksi akan jalanin receive comment
         }
         //when a client connects to our hub, we want them to join a group.
         public override async Task OnConnectedAsync() // automatically going to remove this client (connectionID) from any groups when a client disconnects from signalR
